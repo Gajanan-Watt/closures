@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>debouncing</title>
+
+    <style>
+        #style{
+            margin: auto;
+            width: 1250px;
+            height: 550px;
+            border: 1px solid black;
+        }
+        input{
+            width: 400px;
+            position: fixed;
+            left: 65%;
+            top: 5%;
+        }
+        h2{
+            text-align: center;
+        }
+        #movies{
+            position: fixed;
+            left: 65%;
+            top: 8%;
+            height: 0px;
+            width: 0px;
+            border: 1px solid black;
+            overflow: scroll;
+            border-top: none;
+        }
+        #details{
+            margin: auto;
+            height: 78%;
+            width: 95%;
+            background-color: #7e57c2;
+            border-radius: 5%;
+            display: grid;
+            grid-template-columns: 45% 45%;
+            grid-template-rows: 90%;
+            gap: 5%;
+        }
+        #style2{
+            margin: auto;
+            width: 1250px;
+            height: 750px;
+            border: 1px solid black;
+           
+        }
+        #rated{
+            width: 100%;
+            height: 35%px;
+            border: 1px solid green;
+            overflow-x: scroll;
+            display: flex;
+        }
+        #popular{
+            width: 100%;
+            height: 35%px;
+            border: 1px solid green;
+            overflow-x: scroll;
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div id = "style">
+        <h2>Movie App II</h2>
+        <input oninput="main()" type="text" name="" id="movie" placeholder="Enter movie name">
+        <div id = "movies"></div>
+        <div id = "details">
+
+        </div>
+    </div>
+    <div id = "style2">
+        <h3>POPULAR MOVIES</h3>
+        <div id = "rated"></div>
+        <div>&nbsp;</div>
+        <h3>TRENDING MOVIES</h3>
+        <div id = "popular"></div>
+    </div>
+        
+   
+</body>
+</html>
+
+<script>
+//searchMovies = done
+var parent = document.getElementById("details");
+     //var parent2 = document.getElementById("body");
+let movies_div = document.getElementById("movies")
+let div3 = document.createElement('div');
+        let div4 = document.createElement('div');
+
+    let image = document.createElement('img');
+    image.src = "https://img1.hotstarext.com/image/upload/f_auto,t_web_m_1x/sources/r1/cms/prod/8037/1068037-h-818a1992d2c8";
+    image.style.width = "100%"
+    image.style.height = "90%";
+    image.style.marginTop = "8%";
+    div4.append(image);
+    let head = document.createElement("h2");
+    head.textContent = "HIGHLIGHTS: KKR AMBUSH DC, INTO FINALS";
+    head.style.color = "white";
+    let pa = document.createElement("p");
+    pa.textContent = "VIVO IPL 2021";
+    pa.style.color = "gold"
+    pa.style.textAlign = "center"
+    div3.append(pa, head);
+    parent.append(div3, div4);
+
+    
+    async function res(){
+        try{
+            let res = await fetch("https://api.themoviedb.org/3/movie/top_rated?api_key=4f990f6f8242c70ec7901c6b530dd54a")
+        var data1 = await res.json();
+        //console.log("data1:", data1);
+        // return data1;
+        } catch(e){
+            console.log("e", e);
+        }
+        console.log("data1:", data1);
+        let loop = data1.results
+        loop.forEach((el) =>{
+            let div = document.createElement('div');
+            let rate = document.getElementById("rated");
+        let image = document.createElement('img');
+        image.src = `https://image.tmdb.org/t/p/original/${el.poster_path}`;
+        image.style.width = "200px"
+        image.style.margin = "10px"
+        let mov_name = document.createElement("h3");
+        mov_name.style.textAlign = "center"
+        mov_name.textContent = el.original_title;
+        div.append(image, mov_name);
+        rated.append(div);
+        })
+        
+        //console.log(image)
+    }
+    res();
+
+    async function res2(){
+        try{
+            let res2 =await fetch("https://api.themoviedb.org/3/movie/popular?api_key=4f990f6f8242c70ec7901c6b530dd54a&language=en-US&page=1");
+        var data2 = await res2.json();
+        //console.log("data1:", data1);
+        // return data1;
+        } catch(e){
+            console.log("e", e);
+        }
+        console.log("data2:", data2);
+        let loop = data2.results
+        loop.forEach((el) =>{
+            let div = document.createElement('div');
+            let rate = document.getElementById("rated");
+        let image = document.createElement('img');
+        image.src = `https://image.tmdb.org/t/p/original/${el.poster_path}`;
+        image.style.width = "200px"
+        image.style.margin = "10px"
+        let mov_name = document.createElement("h3");
+        mov_name.style.textAlign = "center"
+        mov_name.textContent = el.original_title;
+        div.append(image, mov_name);
+        popular.append(div);
+        })
+        
+        //console.log(image)
+    }
+    res2();
+    
+    
+    
+   
+
+    
+       
+        
+   
+
+
+
+
+async function searchMovies(movie_name){
+
+    try {
+        let res = await fetch(`http://www.omdbapi.com/?apikey=f1559b4b&s=${movie_name}`);
+        var data = await res.json();
+        return data;
+    } catch(e){
+        console.log("e:", e);
+    }
+}
+//console.log("data",data)
+async function appendMovies(movies){
+    if(movies === undefined){
+        return false;
+    }
+    movies_div.innerHTML = null;
+
+    movies.forEach(function(movie){
+
+        let p = document.createElement('p');
+
+        p.innerText = movie.Title;
+        p.style.cursor = "pointer";
+        p.onclick = () =>{
+            // alert(movie.Title);
+            parent.innerHTML = null;
+        let div1 = document.createElement('div');
+        let div2 = document.createElement('div');
+
+        let img = document.createElement('img');
+        img.src = movie.Poster
+        div1.append(img);
+
+        let name = document.createElement('p');
+        name.innerText = movie.Title;
+        let year = document.createElement('p');
+        year.innerText = movie.Year;
+        let Film_genre = document.createElement('p');
+        Film_genre.innerText = movie.Type;
+        let imdbID = document.createElement('p');
+        imdbID.innerText = movie.imdbID;
+
+        div2.append(name, year, Film_genre, imdbID)
+
+        parent.append(div1, div2);
+
+           //let temp = document.getElementById("movie").value;
+            let drop = document.getElementById("movies");
+            drop.style.width = "0px";
+            drop.style.height = "0px";
+            drop.style.position = "absolute"
+        }
+        
+        movies_div.append(p);
+    });
+    
+ 
+    //drop.style.backgroundColor = "white"
+}
+        
+
+
+
+
+async function main(){
+
+    let name = document.getElementById("movie").value;
+    let drop = document.getElementById("movies");
+    drop.style.width = "406px";
+    drop.style.height = "200px";
+    drop.style.position = "absolute"
+    drop.style.backgroundColor = "white"
+    
+
+    //get search movies
+
+  var res = await searchMovies(name)
+
+  let movies_data = res.Search
+
+  appendMovies(movies_data)
+    
+  console.log("res:", res);
+
+}
+
+</script>
